@@ -1,0 +1,41 @@
+# docker-compose.yml
+version: '3.8'
+
+services:
+  # Main application service
+  app:
+    # Build configuration
+    build:
+      context: .  # Uses the current directory as build context
+      dockerfile: Dockerfile  # Uses our existing Dockerfile
+      target: base  # Targets the base stage for development
+    
+    # Container configuration
+    container_name: notion-pdf-converter
+    
+    # Port mapping - maps host port 3000 to container port 3000
+    ports:
+      - "3000:3000"
+    
+    # Environment variables
+    environment:
+      - NODE_ENV=development
+      - PORT=3000
+    
+    # Volume mounts for development
+    volumes:
+      - .:/src  # Mounts current directory to /src in container
+      - node_modules:/src/node_modules  # Named volume for node_modules
+      - /tmp:/tmp  # Mount tmp directory for Puppeteer
+    
+    # Resource limits
+    deploy:
+      resources:
+        limits:
+          memory: 2G  # Limit memory usage to 2GB
+        reservations:
+          memory: 1G  # Reserve 1GB of memory
+
+# Define named volumes
+volumes:
+  node_modules:  # Persistent volume for node_modules
